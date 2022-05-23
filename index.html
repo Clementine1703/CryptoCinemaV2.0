@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="content-type" content="text/html;charset=utf-8">
+        <!-- <link rel="stylesheet" type="text/css" href="style.css"> -->
+        <title>Сайт в разработке</title>
+
+        <style>
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+            .b-video {
+      width: 100%;
+      min-height: 600px;
+      height: 400vh;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+}
+.viedeo__file{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+
+      
+        </style>
+    </head>
+    
+    <body>
+        <video class="viedeo__file" preload="auto"  muted="muted" volume="0" id="video">
+          <source src="NEWSITE.mp4" type="video/mp4" id="source-video">
+        </video>
+
+        <div class="b-video">
+        </div>
+
+    <script type="text/javascript">
+      window.onbeforeunload = function(){window.scrollTo(0,0);}
+
+      document.addEventListener("DOMContentLoaded", ()=>{
+
+        window.scrollTo({top: 0});
+        let video1 = document.querySelector('.viedeo__file');
+        video1.play();
+        video1_does = false;
+        setTimeout(()=>video1.pause(), 1000);
+
+        window.addEventListener('wheel', scrolled);
+
+
+        function scrolled(e){
+
+          if (!video1_does){
+            video1.play()
+          }
+          // console.log(event.deltaY);
+          video1_does = true;
+        }
+
+
+
+        })
+
+      
+    </script>
+    </body>
+</html>
