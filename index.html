@@ -16,7 +16,7 @@
 		.b-video {
 			width: 100%;
 			min-height: 600px;
-			height: 400vh;
+			height: 200vh;
 			position: relative;
 			overflow: hidden;
 			z-index: 1;
@@ -28,12 +28,26 @@
 			height: 100vh;
 			object-fit: cover;
 		}
+
+		.viedeo__file1 {
+			position: fixed;
+			width: 100%;
+			height: 100vh;
+			object-fit: cover;
+		}
+
+		.displayn {
+			display: none;
+		}
 	</style>
 </head>
 
 <body>
 	<video class="viedeo__file" preload="auto" muted="muted" volume="0" id="video">
-		<source src="NEWSITE.mp4" type="video/mp4" id="source-video">
+		<source class="src" src="NEWSITE.mp4" type="video/mp4" id="source-video">
+	</video>
+	<video class="viedeo__file1 displayn" preload="auto" muted="muted" volume="0" id="video">
+		<source class="src" src="newsite_hodi7oDa.mp4" type="video/mp4" id="source-video">
 	</video>
 
 	<div class="b-video">
@@ -46,22 +60,50 @@
 
 			window.scrollTo({ top: 0 });
 			let video1 = document.querySelector('.viedeo__file');
+			let video2 = document.querySelector('.viedeo__file1');
 			video1.play();
 			video1_does = false;
+			video2_does = true;
+			summ_height = window.innerHeight * 2;
 			setTimeout(() => {
 
 				video1.pause();
 
 				window.addEventListener('wheel', scrolled);
 
+				setInterval(scrolled, 100);
+
+
 
 				function scrolled(e) {
+					if (window.scrollY > 377) {
+						if (!video1_does) {
+							video1.play();
+							video1_does = true;
+							video2_does = false;
+							setTimeout(() => {
+								video1.classList.toggle('displayn');
+								video2.classList.toggle('displayn');
+							}, video1.duration * 1000)
 
-					if (!video1_does) {
-						video1.play()
+						}
+
 					}
-					// console.log(event.deltaY);
-					video1_does = true;
+
+					if (window.scrollY < 377) {
+						if (!video2_does) {
+							video2.play();
+							video1_does = false;
+							video2_does = true;
+							setTimeout(() => {
+								video1.classList.toggle('displayn');
+								video2.classList.toggle('displayn');
+							}, video1.duration * 1000)
+						}
+
+					}
+
+
 				}
 
 
