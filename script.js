@@ -1,6 +1,12 @@
+var preloader = document.querySelector(".preloader");
+
+
 window.onbeforeunload = function () { window.scrollTo(0, 0); }
-document.addEventListener("DOMContentLoaded", () => {
-	window.scrollTo({ top: 0 });
+
+
+window.addEventListener("load", () => {
+	preloader.parentNode.removeChild(preloader);
+	window.scrollTo(0, 0);
 
 	let video = document.querySelector('.video_bg');
 	let video_rev = document.querySelector('.video_bg_rev');
@@ -12,12 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
 	let video_active = true;
 	let video_rev_active = false;
 	let window_height = window.innerHeight;
-	let document_height = window.innerHeight * checkpoints_count;
 	document.querySelector('.scroll_space').style.height = checkpoints_count + '45vh';
 	let active_checkpoint = checkpoint_list[0];
 
-	let ch_1_time = 1;
-	let ch_2_time = video.duration - 0.1;
 
 
 
