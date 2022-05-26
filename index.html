@@ -13,95 +13,240 @@
 			box-sizing: border-box;
 		}
 
-		.b-video {
+		.scroll_space {
 			width: 100%;
 			min-height: 600px;
-			height: 200vh;
+			height: 100vh;
 			position: relative;
 			overflow: hidden;
 			z-index: 1;
 		}
 
-		.viedeo__file {
+		.video_bg {
 			position: fixed;
 			width: 100%;
 			height: 100vh;
 			object-fit: cover;
+			z-index: 0;
 		}
 
-		.viedeo__file1 {
+		.video_bg_rev {
 			position: fixed;
 			width: 100%;
 			height: 100vh;
 			object-fit: cover;
+			z-index: 0;
 		}
 
-		.displayn {
-			display: none;
+		.checkpoint_1_container {
+			position: fixed;
+			width: 100%;
+			height: 100vh;
+			object-fit: cover;
+			background-color: white;
+			z-index: -1;
+			opacity: 0.5;
+		}
+
+		.visible {
+			z-index: 2;
 		}
 	</style>
 </head>
 
 <body>
-	<video class="viedeo__file" preload="auto" muted="muted" volume="0" id="video">
+	<video class="video_bg visible" preload="auto" muted="muted" volume="0" id="video">
 		<source class="src" src="NEWSITE.mp4" type="video/mp4" id="source-video">
 	</video>
-	<video class="viedeo__file1 displayn" preload="auto" muted="muted" volume="0" id="video">
+	<video class="video_bg_rev " preload="auto" muted="muted" volume="0" id="video">
 		<source class="src" src="newsite_hodi7oDa.mp4" type="video/mp4" id="source-video">
 	</video>
-
-	<div class="b-video">
+	<div class="checkpoint_1_container checkpoint" data-check-number='1' data-time='1'>
+	</div>
+	<div class="checkpoint_2_container checkpoint" data-check-number='2' data-time='5'>
+	</div>
+	<div class="scroll_space">
 	</div>
 
 	<script type="text/javascript">
 		window.onbeforeunload = function () { window.scrollTo(0, 0); }
-
 		document.addEventListener("DOMContentLoaded", () => {
-
 			window.scrollTo({ top: 0 });
-			let video1 = document.querySelector('.viedeo__file');
-			let video2 = document.querySelector('.viedeo__file1');
-			video1.play();
-			video1_does = false;
-			video2_does = true;
-			summ_height = window.innerHeight * 2;
+
+			let video = document.querySelector('.video_bg');
+			let video_rev = document.querySelector('.video_bg_rev');
+			let checkpoint_list = document.querySelectorAll('.checkpoint');
+			const checkpoints_count = checkpoint_list.length;
+			video.play();
+			// let video_does_active = true;
+			// let video_rev_does_active = false;
+			let video_active = true;
+			let video_rev_active = false;
+			let window_height = window.innerHeight;
+			let document_height = window.innerHeight * checkpoints_count;
+			document.querySelector('.scroll_space').style.height = checkpoints_count + '01vh';
+			let active_checkpoint = checkpoint_list[0];
+
+			let ch_1_time = 1;
+			let ch_2_time = video.duration - 0.1;
+
+
+
+
 			setTimeout(() => {
-
-				video1.pause();
-
+				video.pause();
 				window.addEventListener('wheel', scrolled);
+				setInterval(scrolled, 1000);
 
-				setInterval(scrolled, 100);
+				function bg_change() {
+					if (video_rev_active) {
+						video_rev.classList.toggle('visible');
+						video.classList.toggle('visible');
+
+					}
+					else {
+						video.classList.toggle('visible');
+						video_rev.classList.toggle('visible');
+
+					}
+
+				}
+
+
+				function scrolled(event) {
+
+					if ((video_active) || (video_rev_active)) {
+						if (window.scrollY > (+active_checkpoint.getAttribute('data-check-number') * window_height)) {
+							if (video_active) {
+								console.log(+active_checkpoint.getAttribute('data-check-number') * window_height, '//', window.scrollY);
+							}
+							else {
+								bg_change();
+							}
+							let video_active_cash = true;
+							let video_rev_active_cash = false;
+
+							video_active = false;
+							video_rev_active = false;
+							let next_active_checkpoint = 0;
+							checkpoint_list.forEach(el => {
+								if ((window.scrollY >= +el.getAttribute('data-check-number') * window_height - window_height) && (window.scrollY <= (+el.getAttribute('data-check-number') * window_height))) {
+									next_active_checkpoint = el;
+								};
+							});
+							console.log(next_active_checkpoint);
+							let stop_time = 0;
+							stop_time = (+next_active_checkpoint.getAttribute('data-time') - video.currentTime) * 1000;
+							active_checkpoint = next_active_checkpoint;
+							video.play();
+							setTimeout(function () {
+								console.log(video.currentTime);
+								video.pause();
+								video_rev.currentTime = video.duration - (+active_checkpoint.getAttribute('data-time'));
+								video_active = video_active_cash;
+								video_rev_active = video_rev_active_cash;
+							}, stop_time);
+
+						}
 
 
 
-				function scrolled(e) {
-					if (window.scrollY > 377) {
-						if (!video1_does) {
-							video1.play();
-							video1_does = true;
-							video2_does = false;
-							setTimeout(() => {
-								video1.classList.toggle('displayn');
-								video2.classList.toggle('displayn');
-							}, video1.duration * 1000)
+						if (window.scrollY < (+active_checkpoint.getAttribute('data-check-number') * window_height - window_height)) {
+							if (video_rev_active) {
+								console.log(+active_checkpoint.getAttribute('data-check-number') * window_height, '//', window.scrollY);
+							}
+							else {
+								bg_change();
+							}
+							let video_active_cash = false;
+							let video_rev_active_cash = true;
+
+							video_active = false;
+							video_rev_active = false;
+							let next_active_checkpoint = 0;
+							checkpoint_list.forEach(el => {
+								if ((window.scrollY >= +el.getAttribute('data-check-number') * window_height - window_height) && (window.scrollY <= (+el.getAttribute('data-check-number') * window_height))) {
+									next_active_checkpoint = el;
+								};
+							});
+							console.log(next_active_checkpoint);
+							let stop_time = 0;
+							stop_time = ((video_rev.duration - (+next_active_checkpoint.getAttribute('data-time'))) - (video_rev.duration - video.currentTime)) * 1000;
+							active_checkpoint = next_active_checkpoint;
+							video_rev.play();
+							setTimeout(function () {
+								console.log(video_rev.currentTime);
+								video_rev.pause();
+								video.currentTime = +active_checkpoint.getAttribute('data-time');
+								video_active = video_active_cash;
+								video_rev_active = video_rev_active_cash;
+							}, stop_time);
 
 						}
 
 					}
 
-					if (window.scrollY < 377) {
-						if (!video2_does) {
-							video2.play();
-							video1_does = false;
-							video2_does = true;
-							setTimeout(() => {
-								video1.classList.toggle('displayn');
-								video2.classList.toggle('displayn');
-							}, video1.duration * 1000)
-						}
 
-					}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					// if (window.scrollY > 377) {
+					// 	if (video_does_active) {
+					// 		// window.removeEventListener('wheel', scrolled);
+					// 		let stop_time_video = video.duration * 1000 - 1100;
+					// 		video.play();
+					// 		video_does_active = false;
+					// 		video_rev_does_active = false;
+					// 		setTimeout(function () {
+					// 			video.pause();
+					// 			video_does_active = false;
+					// 			video_rev_does_active = true;
+					// 			video_rev.currentTime = 0.1;
+					// 			bg_change();
+					// 			video.currentTime = 1;
+					// 		}, stop_time_video);
+					// 	}
+					// }
+
+					// if (window.scrollY < 377) {
+					// 	if (video_rev_does_active) {
+					// 		// window.removeEventListener('wheel', scrolled);
+					// 		let stop_time_video_rev = video.duration * 1000 - 1100;
+					// 		video_rev.play();
+					// 		video_does_active = false;
+					// 		video_rev_does_active = false;
+					// 		setTimeout(function () {
+					// 			video_rev.pause();
+					// 			video_does_active = true;
+					// 			video_rev_does_active = false;
+					// 			video.currentTime = 1;
+					// 			bg_change();
+					// 			video_rev.currentTime = 0.1;
+					// 		}, stop_time_video_rev);
+					// 	}
+					// }
 
 
 				}
