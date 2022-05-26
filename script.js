@@ -5,7 +5,7 @@ window.onbeforeunload = function () { window.scrollTo(0, 0); }
 
 
 window.addEventListener("load", () => {
-	preloader.parentNode.removeChild(preloader);
+	preloader.remove();
 	window.scrollTo(0, 0);
 
 	let video = document.querySelector('.video_bg');
