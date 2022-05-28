@@ -5,7 +5,7 @@ window.onbeforeunload = function () { window.scrollTo(0, 0); }
 
 
 window.addEventListener("load", () => {
-	preloader.parentNode.removeChild(preloader);
+	setTimeout(() => { preloader.parentNode.removeChild(preloader); }, 300)
 	window.scrollTo(0, 0);
 
 	let video = document.querySelector('.video_bg');
@@ -27,6 +27,8 @@ window.addEventListener("load", () => {
 
 	setTimeout(() => {
 		video.pause();
+		video.currentTime = 1;
+		video_rev.currentTime = video_rev.duration - video.currentTime;
 		window.addEventListener('wheel', scrolled);
 		setInterval(scrolled, 1000);
 
@@ -69,9 +71,11 @@ window.addEventListener("load", () => {
 					let stop_time = 0;
 					stop_time = (+next_active_checkpoint.getAttribute('data-time') - video.currentTime) * 1000;
 					active_checkpoint = next_active_checkpoint;
+					console.log(stop_time);
 					video.play();
 					setTimeout(function () {
 						video.pause();
+						video.currentTime = (+active_checkpoint.getAttribute('data-time'));
 						video_rev.currentTime = video.duration - (+active_checkpoint.getAttribute('data-time'));
 						video_active = video_active_cash;
 						video_rev_active = video_rev_active_cash;
@@ -100,14 +104,17 @@ window.addEventListener("load", () => {
 						};
 					});
 					let stop_time = 0;
-					stop_time = ((video_rev.duration - (+next_active_checkpoint.getAttribute('data-time'))) - (video_rev.duration - video.currentTime)) * 1000;
+					stop_time = ((video_rev.duration - (+next_active_checkpoint.getAttribute('data-time'))) - video_rev.currentTime) * 1000;
 					active_checkpoint = next_active_checkpoint;
+					console.log(stop_time);
 					video_rev.play();
 					setTimeout(function () {
 						video_rev.pause();
-						video.currentTime = +active_checkpoint.getAttribute('data-time');
+						video.currentTime = (+active_checkpoint.getAttribute('data-time'));
+						video_rev.currentTime = video.duration - (+active_checkpoint.getAttribute('data-time'));
 						video_active = video_active_cash;
 						video_rev_active = video_rev_active_cash;
+						active_checkpoint.classList.add('visible');
 					}, stop_time);
 
 				}
